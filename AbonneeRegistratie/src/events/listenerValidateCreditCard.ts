@@ -1,6 +1,6 @@
 import client from './client';
 import dotenv from 'dotenv';
-import { publishToTopic } from './pubToTooic';
+import { pubToNotification } from './pubToNotification';
 
 dotenv.config();
 
@@ -36,13 +36,13 @@ export const listenerValidateCreditCard = client.createConsumer(
       console.log('Sending message to Aboonnee');
       console.log('====================================');
 
-      publishToTopic(process.env.ROUTING_KEY_ABONNEE, parsedMessage.username);
+      pubToNotification(process.env.ROUTING_KEY_ABONNEE, parsedMessage.username);
 
       console.log('====================================');
       console.log('Sending message to Uitgever');
       console.log('====================================');
 
-      publishToTopic(process.env.ROUTING_KEY_UITGEVER, parsedMessage.username);
+      pubToNotification(process.env.ROUTING_KEY_UITGEVER, parsedMessage.username);
     }
 
     // Log the parsed message

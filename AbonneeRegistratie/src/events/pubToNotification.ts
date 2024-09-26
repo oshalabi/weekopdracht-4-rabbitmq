@@ -7,7 +7,7 @@ const pubToTopic = client.createPublisher({
   confirm: true,
 });
 
-export const publishToTopic = async (routingKey: string, message: string) => {
+export const pubToNotification = async (routingKey: string, message: string) => {
   try {
     await pubToTopic.send(
       {

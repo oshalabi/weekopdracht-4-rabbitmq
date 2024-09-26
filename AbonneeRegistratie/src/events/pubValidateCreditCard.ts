@@ -7,10 +7,10 @@ const pubToQueue = client.createPublisher({
   confirm: true,
 });
 
-type ValidateUserRequest = {
+interface ValidateUserRequest {
   username: string;
   creditCard: string;
-};
+}
 
 export const pubValidateCreditCard = async ({
   username,
