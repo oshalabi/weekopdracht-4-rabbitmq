@@ -1,0 +1,120 @@
+# --- Systeem specifieke bestanden ---
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+.Trash-*
+
+# --- Logs ---
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# --- Dependency directories ---
+# Node.js / JavaScript
+node_modules/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.env
+*.venv
+env/
+venv/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Ruby
+*.gem
+*.rbc
+.ruby-version
+.ruby-gemset
+/log/*
+/tmp/*
+/vendor/bundle/
+/.bundle/
+/.yardoc
+/_yardoc/
+/.redcar/
+
+# --- IDE directories ---
+# JetBrains IDE's (IntelliJ IDEA, PyCharm, WebStorm, etc.)
+.idea/
+
+# Visual Studio Code
+.vscode/
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+# --- Operating system generated files ---
+# macOS Finder attributes
+.Spotlight-V100
+.Trashes
+.idea/
+
+# --- Compiled languages and builds ---
+# Java
+*.class
+*.jar
+*.war
+*.ear
+*.iml
+
+# C/C++
+*.o
+*.obj
+*.dll
+*.exe
+*.out
+*.so
+
+# --- Temporary / Backup files ---
+*.bak
+*.swp
+*.swo
+*.tmp
+*~
+
+# --- Git files ---
+# Ignore git specific metadata
+!.gitignore
+
+# --- Specific to certain languages/frameworks ---
+# Add any language/framework specific ignores here
+
+# --- Example for Laravel (PHP framework) ---
+/vendor/
+/public/storage
+/storage/*.key
+.env
+
+# --- Example for Java Maven ---
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+
+# --- Example for Python Django ---
+*.sqlite3
+*.pyc
+*.pyo
+*.pyd
+db.sqlite3
