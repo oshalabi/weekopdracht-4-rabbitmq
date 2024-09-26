@@ -1,0 +1,22 @@
+
+# Base image for Node.js
+FROM node:18-alpine
+
+# Set working directory
+WORKDIR /usr/src/app
+
+# Install dependencies
+COPY package*.json ./
+RUN npm install
+
+# Copy source code
+COPY . .
+
+# Compile TypeScript (if applicable)
+RUN npm run
+
+# Expose the service port (8080 as per your description)
+EXPOSE 8080
+
+# Command to run the app
+CMD ["npm", "start"]

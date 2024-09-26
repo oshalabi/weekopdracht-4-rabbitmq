@@ -1,7 +1,7 @@
 import { Connection } from 'rabbitmq-client';
 
 
-const client = new Connection('amqp://guest:guest@localhost:5672');
+const client = new Connection('amqp://rabbitmq');
 
 client.on('error', (err) => {
     console.log('====================================');

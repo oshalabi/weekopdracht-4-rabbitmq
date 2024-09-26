@@ -5,7 +5,7 @@ public class AbonneeRouteBuilder extends RouteBuilder {
 
     @Override
     public void configure() throws Exception {
-        from("rabbitmq:notification?portNumber=5672&exchangeType=topic&routingKey=notification_abonnee&autoAck=false&durable=false&autoDelete=false")
+        from("rabbitmq:rabbitmq?notification?portNumber=5672&exchangeType=topic&routingKey=notification_abonnee&autoAck=false&durable=false&autoDelete=false")
         .log("Received message from RabbitMQ: ${body}")
         .process(exchange -> {
             String messageBody = exchange.getIn().getBody(String.class);

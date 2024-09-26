@@ -1,0 +1,28 @@
+# Use the official .NET SDK image for building the app
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy the project file(s) and restore any dependencies
+COPY ValidateCreditCard.csproj ./eurocard-service/
+
+# Navigate into the project directory and restore dependencies
+WORKDIR /app/eurocard-service
+RUN dotnet restore
+
+# Copy the rest of the source code into the container
+COPY . .
+
+# Publish the project
+RUN dotnet publish "ValidateCreditCard.csproj" -c Release -o /app/out
+
+# Use the official .NET runtime image to run the app
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+WORKDIR /app
+
+# Copy the build artifacts from the build stage
+COPY --from=build /app/out .
+
+# Command to run the applicationls
+ENTRYPOINT ["dotnet", "ValidateCreditCard.dll"]

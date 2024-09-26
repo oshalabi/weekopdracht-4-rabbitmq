@@ -1,22 +1,16 @@
-# Example Dockerfile
-# Build Stage
-FROM maven:3.8.5-openjdk-17-slim AS build
+# Use the official Maven image for building the app
+FROM maven:3.9.0-eclipse-temurin-17 AS build
 
+# Set the working directory inside the container
 WORKDIR /app
 
+# Copy the pom.xml and install dependencies
 COPY pom.xml .
-COPY src ./src
+RUN mvn dependency:go-offline
 
-RUN mvn dependency:go-offline -B
-RUN mvn clean package -DskipTests
+# Copy the rest of the application code and build the app
+COPY . .
+RUN mvn clean install
 
-# Runtime Stage
-FROM eclipse-temurin:20-jre-alpine
-WORKDIR /app
-COPY --from=build /app/target/*.jar app.jar
-
-# Start de applicatie
-CMD ["java", "-jar", "app.jar"]
-
-EXPOSE 8080
+CMD ["mvn", "spring-boot:run"]
 

@@ -1,0 +1,37 @@
+version: '3'
+services:
+  rabbitmq:
+    image: 'rabbitmq:3-management'
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+
+  abonnee-registratie:
+    build: ./abonnee-registratie
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+    ports:
+      - '3000:3000'
+    depends_on:
+      - rabbitmq
+
+  eurocard-service:
+    build: ./eurocard-service
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+    depends_on:
+      - rabbitmq
+
+  uitgever-service:
+    build: ./uitgever-service
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+    depends_on:
+      - rabbitmq
+
+  abonnee-service:
+    build: ./abonnee-service
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+    depends_on:
+      - rabbitmq
