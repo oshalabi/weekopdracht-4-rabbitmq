@@ -46,7 +46,7 @@ namespace ValidateCreditCardPublisherDotnet
 
                 JObject validationMessage = new()
 
-                {
+                {       { "username", JObject.Parse(message)["username"] },
                         { "creditCard", JObject.Parse(message)["creditCard"] },
                         { "isValid", isValid }
                 };

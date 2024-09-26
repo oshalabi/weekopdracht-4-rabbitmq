@@ -1,5 +1,6 @@
 import client from './client';
 import dotenv from 'dotenv';
+import { publishToTopic } from './pubToTooic';
 
 dotenv.config();
 
@@ -20,6 +21,28 @@ export const listenerValidateCreditCard = client.createConsumer(
     } catch (err) {
       console.error('Failed to parse message body:', err);
       return;
+    }
+
+    console.log('====================================');
+    console.log(parsedMessage);
+    console.log('====================================');
+
+    if (parsedMessage.isValid) {
+      console.log('====================================');
+      console.log('Credit card validation successful');
+      console.log('====================================');
+
+      console.log('====================================');
+      console.log('Sending message to Aboonnee');
+      console.log('====================================');
+
+      publishToTopic(process.env.ROUTING_KEY_ABONNEE, parsedMessage.username);
+
+      console.log('====================================');
+      console.log('Sending message to Uitgever');
+      console.log('====================================');
+
+      publishToTopic(process.env.ROUTING_KEY_UITGEVER, parsedMessage.username);
     }
 
     // Log the parsed message

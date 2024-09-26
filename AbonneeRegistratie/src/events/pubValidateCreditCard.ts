@@ -7,10 +7,19 @@ const pubToQueue = client.createPublisher({
   confirm: true,
 });
 
-export const pubValidateCreditCard = async (creditCard: string) => {
+type ValidateUserRequest = {
+  username: string;
+  creditCard: string;
+};
+
+export const pubValidateCreditCard = async ({
+  username,
+  creditCard,
+}: ValidateUserRequest) => {
   client.queueDeclare(process.env.QUEUE_NAME);
 
   const msg = JSON.stringify({
+    username: username,
     creditCard: creditCard,
     operation: 'validate',
   });

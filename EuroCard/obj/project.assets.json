@@ -166,11 +166,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Osama\\Dropbox\\Minor\\dev\\rabbitmq\\ValidateCreditCard.csproj",
+      "projectUniqueName": "C:\\Users\\Osama\\Dropbox\\Minor\\dev\\github-rabbitmq\\weekopdracht-4-rabbitmq\\EuroCard\\ValidateCreditCard.csproj",
       "projectName": "ValidateCreditCard",
-      "projectPath": "C:\\Users\\Osama\\Dropbox\\Minor\\dev\\rabbitmq\\ValidateCreditCard.csproj",
+      "projectPath": "C:\\Users\\Osama\\Dropbox\\Minor\\dev\\github-rabbitmq\\weekopdracht-4-rabbitmq\\EuroCard\\ValidateCreditCard.csproj",
       "packagesPath": "C:\\Users\\Osama\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Osama\\Dropbox\\Minor\\dev\\rabbitmq\\obj\\",
+      "outputPath": "C:\\Users\\Osama\\Dropbox\\Minor\\dev\\github-rabbitmq\\weekopdracht-4-rabbitmq\\EuroCard\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Osama\\AppData\\Roaming\\NuGet\\NuGet.Config"
