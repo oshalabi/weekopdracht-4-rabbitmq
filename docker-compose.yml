@@ -1,37 +1,93 @@
-version: '3'
+version: '3.8'  # Use at least version 3.4+ for healthcheck support
 services:
   rabbitmq:
     image: 'rabbitmq:3-management'
     ports:
       - '5672:5672'
       - '15672:15672'
+    networks:
+      - rabbitmq_network
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
 
   abonnee-registratie:
     build: ./abonnee-registratie
     environment:
       - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_PASSWORD=guest
+      - RABBITMQ_USERNAME=guest
+      - QUEUE_NAME=creditcard_checker
+      - RESPONSE_QUEUE_NAME=creditcard_queue_checker_response
+      - TOPIC_EXCHANGE=notification
+      - QUEUE_UITGEVER=uitgever_queue 
+      - ROUTING_KEY_UITGEVER=notification_uitgever
+      - QUEUE_ABONNEE=uitgever_abonnee 
+      - ROUTING_KEY_ABONNEE=notification_abonnee
     ports:
       - '3000:3000'
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - rabbitmq_network
 
   eurocard-service:
     build: ./eurocard-service
     environment:
+      - VALIDATION_QUEUE=creditcard_queue_checker_response
+      - QUEUE_NAME=creditcard_checker
       - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USERNAME=guest
+      - RABBITMQ_PASSWORD=guest
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - rabbitmq_network
+    restart: unless-stopped
 
   uitgever-service:
     build: ./uitgever-service
     environment:
+      - TOPIC_EXCHANGE=notification
+      - QUEUE=uitgever_queue
+      - ROUTING_KEY_UITGEVER=notification_uitgever
       - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USERNAME=guest
+      - RABBITMQ_PASSWORD=guest
+      - RABBITMQ_VIRTUAL_HOST=/
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - rabbitmq_network
 
   abonnee-service:
     build: ./abonnee-service
     environment:
-      - RABBITMQ_HOST=rabbitmq
+      rabbitmq.username: guest
+      rabbitmq.password: guest
+      rabbitmq.host: rabbitmq
+      rabbitmq.port: 5672
+      rabbitmq.exchange: notification
+      rabbitmq.exchangeType: topic
+      rabbitmq.routingKey: notification_abonnee
+      rabbitmq.autoAck: false
+      rabbitmq.durable: false
+      rabbitmq.autoDelete: false
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - rabbitmq_network
+
+networks:
+  rabbitmq_network:
+    driver: bridge

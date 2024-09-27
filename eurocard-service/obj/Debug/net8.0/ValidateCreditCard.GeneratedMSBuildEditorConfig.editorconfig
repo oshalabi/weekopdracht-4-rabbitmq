@@ -8,6 +8,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = ValidateCreditCardPublisherDotnet
-build_property.ProjectDir = C:\Users\Osama\Dropbox\Minor\dev\github-rabbitmq\weekopdracht-4-rabbitmq\EuroCard\
+build_property.ProjectDir = C:\Users\Osama\Dropbox\Minor\dev\github-rabbitmq\weekopdracht-4-rabbitmq\eurocard-service\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 

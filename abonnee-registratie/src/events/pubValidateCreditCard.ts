@@ -32,7 +32,7 @@ export const pubValidateCreditCard = async ({
   try {
     // Publish the message to the main queue
     await pubToQueue.send(envelope, Buffer.from(msg));
-    console.log(`[+] Published message to creditcard_queue: ${msg}`);
+    console.log(`[+] Published message to ${process.env.QUEUE_NAME}: ${msg}`);
   } catch (err) {
     console.error('Error publishing message:', err);
   }

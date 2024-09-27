@@ -8,68 +8,83 @@ namespace ValidateCreditCardPublisherDotnet
 {
     public class ValidateCreditCardSubscriber
     {
-        private const string QUEUE_NAME = "creditcard_checker";
-        private const string RABBITMQ_HOST = "localhost";
+        private static readonly string QUEUE_NAME = Environment.GetEnvironmentVariable("QUEUE_NAME") ?? "creditcard_checker";
+        private static readonly string RABBITMQ_HOST = Environment.GetEnvironmentVariable("RABBITMQ_HOST") ?? "localhost";
+        private static readonly string RABBITMQ_PORT = Environment.GetEnvironmentVariable("RABBITMQ_PORT") ?? "5672";
+        private static readonly string RABBITMQ_USERNAME = Environment.GetEnvironmentVariable("RABBITMQ_USERNAME") ?? "guest";
+        private static readonly string RABBITMQ_PASSWORD = Environment.GetEnvironmentVariable("RABBITMQ_PASSWORD") ?? "guest";
+
+        private IConnection connection;
+        private IModel channel;
 
         public void Run()
         {
+
             var factory = new ConnectionFactory()
             {
                 HostName = RABBITMQ_HOST,
-                UserName = "guest",
-                Password = "guest"
+                Port = int.Parse(RABBITMQ_PORT),
+                UserName = RABBITMQ_USERNAME,
+                Password = RABBITMQ_PASSWORD
             };
 
-            using var connection = factory.CreateConnection();
-            using var channel = connection.CreateModel();
-
-            channel.QueueDeclare(queue: QUEUE_NAME,
-                                 durable: false,
-                                 exclusive: false,
-                                 autoDelete: false,
-                                 arguments: null);
-
-
-            Console.WriteLine($"[*] Waiting for messages in queue: {QUEUE_NAME}. Press [enter] to exit.");
-
-            var consumer = new EventingBasicConsumer(channel);
-
-            consumer.Received += (model, ea) =>
+            try
             {
-                var body = ea.Body.ToArray();
-                var message = Encoding.UTF8.GetString(body);
 
-                Console.WriteLine($"[x] Received message: {message}");
+                connection = factory.CreateConnection();
 
-                bool isValid = ValidateCreditCard(message);
-                string validationResult = isValid ? "valid" : "invalid";
+                Console.WriteLine($"Connecting to RabbitMQ at {RABBITMQ_HOST}:{RABBITMQ_PORT} with user {RABBITMQ_USERNAME}");
 
-                JObject validationMessage = new()
+                channel = connection.CreateModel();
 
-                {       { "username", JObject.Parse(message)["username"] },
-                        { "creditCard", JObject.Parse(message)["creditCard"] },
-                        { "isValid", isValid }
-                };
 
-                string validationString = validationMessage.ToString();
-                byte[] responseMessage = Encoding.UTF8.GetBytes(validationString);
+                channel.QueueDeclare(queue: QUEUE_NAME, durable: false, exclusive: false, autoDelete: false, arguments: null);
 
-                try
-                {
-                    var publisher = new ValidateCreditCardPublisher();
-                    publisher.PublishValidationResult(responseMessage);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"[!] Failed to publish message: {ex.Message}");
-                }
 
-                channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
+                Console.WriteLine($"[*] Waiting for messages in queue: {QUEUE_NAME}. Press [enter] to exit.");
+
+                var consumer = new EventingBasicConsumer(channel);
+                consumer.Received += OnMessageReceived;
+
+                channel.BasicConsume(queue: QUEUE_NAME, autoAck: false, consumer: consumer);
+                Console.ReadLine();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[!] Error in RabbitMQ connection: {ex.Message}");
+            }
+        }
+
+        private void OnMessageReceived(object model, BasicDeliverEventArgs ea)
+        {
+            var body = ea.Body.ToArray();
+            var message = Encoding.UTF8.GetString(body);
+            Console.WriteLine($"[x] Received message: {message}");
+
+            bool isValid = ValidateCreditCard(message);
+            string validationResult = isValid ? "valid" : "invalid";
+
+            JObject validationMessage = new()
+            {
+                { "username", JObject.Parse(message)["username"] },
+                { "creditCard", JObject.Parse(message)["creditCard"] },
+                { "isValid", isValid }
             };
 
-            channel.BasicConsume(queue: QUEUE_NAME, autoAck: false, consumer: consumer);
+            string validationString = validationMessage.ToString();
+            byte[] responseMessage = Encoding.UTF8.GetBytes(validationString);
 
-            Console.ReadLine();
+            try
+            {
+                var publisher = new ValidateCreditCardPublisher();
+                publisher.PublishValidationResult(responseMessage);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[!] Failed to publish message: {ex.Message}");
+            }
+
+            channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
         }
 
         private bool ValidateCreditCard(string message)
@@ -78,7 +93,6 @@ namespace ValidateCreditCardPublisherDotnet
             {
                 JObject json = JObject.Parse(message);
                 string creditCard = (string)json["creditCard"];
-
 
                 if (int.TryParse(creditCard, out int cardNumber))
                 {

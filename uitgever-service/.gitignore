@@ -118,3 +118,4 @@ buildNumber.properties
 *.pyo
 *.pyd
 db.sqlite3
+.venv

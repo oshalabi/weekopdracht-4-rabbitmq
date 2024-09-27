@@ -1,3 +1,4 @@
+using System.Threading;
 
 namespace ValidateCreditCardPublisherDotnet
 {
@@ -13,6 +14,11 @@ namespace ValidateCreditCardPublisherDotnet
             var validateCreditCardSubscriber = new ValidateCreditCardSubscriber();
             validateCreditCardSubscriber.Run();
 
+            // Keep the service running
+            while (true)
+            {
+                Thread.Sleep(1000);
+            }
         }
     }
 }

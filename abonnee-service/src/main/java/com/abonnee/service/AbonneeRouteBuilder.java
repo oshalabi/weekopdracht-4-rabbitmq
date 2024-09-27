@@ -5,11 +5,22 @@ public class AbonneeRouteBuilder extends RouteBuilder {
 
     @Override
     public void configure() throws Exception {
-        from("rabbitmq:rabbitmq?notification?portNumber=5672&exchangeType=topic&routingKey=notification_abonnee&autoAck=false&durable=false&autoDelete=false")
-        .log("Received message from RabbitMQ: ${body}")
+
+        log.info("AbonneeService is now listening for messages on topic: {{rabbitmq.exchange}} with routing key: {{rabbitmq.routingKey}}");
+
+
+        from("rabbitmq://{{rabbitmq.host}}:{{rabbitmq.port}}/{{rabbitmq.exchange}}"
+        + "?username={{rabbitmq.username}}"
+        + "&password={{rabbitmq.password}}"
+        + "&exchangeType={{rabbitmq.exchangeType}}"
+        + "&routingKey={{rabbitmq.routingKey}}"
+        + "&autoAck={{rabbitmq.autoAck}}"
+        + "&durable={{rabbitmq.durable}}"
+        + "&autoDelete={{rabbitmq.autoDelete}}")
+        .log("Received message from RabbitMQ. Exchange: {{rabbitmq.exchange}}, Routing Key: {{rabbitmq.routingKey}}")
+        .log("Message body: User ${body}")
         .process(exchange -> {
             String messageBody = exchange.getIn().getBody(String.class);
-            // Process the message for Abonnee
             System.out.println("Processing message for Abonnee: " + messageBody);
         });
     }
