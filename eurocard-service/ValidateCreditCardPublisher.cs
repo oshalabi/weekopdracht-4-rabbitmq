@@ -9,7 +9,7 @@ namespace ValidateCreditCardPublisherDotnet
     internal class ValidateCreditCardPublisher
     {
         private static readonly string VALIDATION_QUEUE = Environment.GetEnvironmentVariable("VALIDATION_QUEUE") ?? "creditcard_queue_checker_response";
-        private static readonly string RABBITMQ_HOST = Environment.GetEnvironmentVariable("RABBITMQ_HOST") ?? "localhost";
+        
         private static readonly string RABBITMQ_PORT = Environment.GetEnvironmentVariable("RABBITMQ_PORT") ?? "5672";
         private static readonly string RABBITMQ_USERNAME = Environment.GetEnvironmentVariable("RABBITMQ_USERNAME") ?? "guest";
         private static readonly string RABBITMQ_PASSWORD = Environment.GetEnvironmentVariable("RABBITMQ_PASSWORD") ?? "guest";
